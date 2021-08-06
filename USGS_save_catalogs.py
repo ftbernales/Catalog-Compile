@@ -1,20 +1,18 @@
+import json
 import requests
 from datetime import datetime
 import xml.etree.ElementTree as ET
 
-print('\nProvide Latitude and Longitude in decimal degrees')
-LAT = float(input('Latitude\t: '))
-LON = float(input('Longitude\t: '))
-# LAT = 14.36574
-# LON = 121.400784
+f = open('coords.json')
+coords = json.load(f)
+LAT = coords['center']['latitude']
+LON = coords['center']['longitude']
 
 DATE = datetime.today().strftime('%Y.%m.%d')
-print('\nProvide Geographic Region Boundary in decimal degrees')
-print('Press "Enter" to use [Default]')
-NORTH = float(input("North [21.1]\t: ") or 21.1)
-SOUTH = float(input("South [4.00]\t: ") or 4.00)
-EAST = float(input("East [128.5]\t: ") or 128.5)
-WEST = float(input("West [116.1]\t: ") or 116.1)
+NORTH = coords['boundary']['north']
+SOUTH = coords['boundary']['south']
+EAST = coords['boundary']['east']
+WEST = coords['boundary']['west']
 
 def usgs_save_catalog(file, extension, lat, lon, mindepth, maxdepth, radius):
     filename = file + DATE + '.' + extension
