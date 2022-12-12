@@ -8,7 +8,7 @@ import pandas as pd
 plt.rcParams["font.family"] = "Calibri"
 
 def plot_disagg_M_R_eps(disagg_results, mag_bin_width, dist_bin_width):
-    IM = 'Sa(1.0)'
+    IM = 'PGA'
     RP = 10000
     df = pd.read_excel(disagg_results, sheet_name=None, skiprows=1)
     df_disagg = df.get(IM)
@@ -31,7 +31,10 @@ def plot_disagg_M_R_eps(disagg_results, mag_bin_width, dist_bin_width):
 
     ax.set_xlabel('Distance R (km)', fontsize=10)
     ax.set_ylabel('Magnitude', fontsize=10)
-    ax.set_zlabel('Contribution (%)', fontsize=10)
+    ax.set_zlabel('Contribution (%)', fontsize=10, rotation=90)
+    ax.zaxis.set_rotate_label(False)
+    ax.zaxis._axinfo['juggled'] = (1, 2, 0)
+
     ax.tick_params(axis='x', labelsize=9)
     ax.tick_params(axis='y', labelsize=9)
     ax.tick_params(axis='z', labelsize=9)
@@ -51,7 +54,7 @@ def plot_disagg_M_R_eps(disagg_results, mag_bin_width, dist_bin_width):
 
     fig.legend(handles=legend_elements, loc="lower center", borderaxespad=0.,
                 ncol=num_eps)
-    # plt.tight_layout(rect=[0, 0.03, 1, 0.1])
+    plt.tight_layout(rect=[0, 0.05, 1.1, 1])
     fig.suptitle(f"Disaggregation Plot of {RP:,d}-year {IM}", 
                     fontsize=14, fontweight='bold')
     plt.savefig(f'disagg_M-R-eps_{RP:,d}-yr_{IM}.svg')
