@@ -10,13 +10,16 @@ plt.rcParams["font.family"] = "Calibri"
 def plot_disagg_M_R_eps(disagg_results, mag_bin_width, dist_bin_width):
     IM = 'PGA'
     RP = 10000
+    dist_ulim = 300
+
     df = pd.read_excel(disagg_results, sheet_name=None, skiprows=1)
     df_disagg = df.get(IM)
-    df_data = df_disagg.loc[df_disagg['eps'] == 0] # this may be buggy if not 0
+    df_disagg = df_disagg.loc[df_disagg['dist'] <= dist_ulim]
 
     eps = np.array(pd.unique(df_disagg['eps']))
     eps_list = np.unique(eps)
     num_eps = len(eps_list)
+    df_data = df_disagg.loc[df_disagg['eps'] == eps_list[0]]
 
     mag = np.array(df_data['mag']) - mag_bin_width/2.
     dist = np.array(df_data['dist']) - dist_bin_width/2.
