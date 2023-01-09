@@ -7,7 +7,8 @@ import pandas as pd
 
 plt.rcParams["font.family"] = "Calibri"
 
-def plot_disagg_M_R_eps(disagg_results, mag_bin_width, dist_bin_width):
+def plot_disagg_M_R_eps(disagg_results, mag_bin_width=0.3, dist_bin_width=20.,
+                        **kwargs):
     IM = 'PGA'
     RP = 10000
     dist_ulim = 300
@@ -44,28 +45,26 @@ def plot_disagg_M_R_eps(disagg_results, mag_bin_width, dist_bin_width):
 
     # Loop over all coord values and then stack the bars for similar locations
     # colors = cm.tab20(np.linspace(0, 1, num_eps))
-    colors = ['b', 'r', 'y'] # extend for arbitrary number of eps bins
+    colors = ['b', 'r', 'y', 'g', 'c', 'm'] # extend for arbitrary number of eps bins
     zpos = np.zeros_like(aroe)
     legend_elements = []
     for i, ep in enumerate(eps_list):
         d_aroe = np.array(df_disagg.loc[(df_disagg['eps'] == ep), 'ARoE'])
         ax.bar3d(dist, mag, zpos, d_dist, d_mag, d_aroe,
-                color=colors[i], zsort='average', alpha=0.7, shade=True)
+                color=colors[i], zsort='min', alpha=1., edgecolor='black', linewidth=0.25, shade=True)
         legend_elements.append(mpatches.Patch(facecolor=colors[i],
                                 label=f"\u03B5 = {ep:.2f}"))
         zpos += d_aroe 
 
     fig.legend(handles=legend_elements, loc="lower center", borderaxespad=0.,
-                ncol=num_eps)
-    plt.tight_layout(rect=[0, 0.05, 1.1, 1])
+                ncol=num_eps, fontsize=7)
+    plt.tight_layout()
     fig.suptitle(f"Disaggregation Plot of {RP:,d}-year {IM}", 
                     fontsize=14, fontweight='bold')
-    plt.savefig(f'disagg_M-R-eps_{RP:,d}-yr_{IM}.svg')
+    fig.savefig(f'disagg_M-R-eps_{RP:,d}-yr_{IM}.svg')
 
 
 if __name__ == "__main__":
-    disagg_results = '(SHA) Disaggregation Plots (M-R-Eps) R0 2022.12.07.xlsx'
-    mag_bin_width = 0.3
-    dist_bin_width = 20.
+    disagg_results = '(SHA) Disaggregation Plots (M-R-Eps) R0 2022.12.14.xlsx'
     
-    plot_disagg_M_R_eps(disagg_results, mag_bin_width, dist_bin_width)
+    plot_disagg_M_R_eps(disagg_results)
