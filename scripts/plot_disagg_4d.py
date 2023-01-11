@@ -9,7 +9,7 @@ plt.rcParams["font.family"] = "Calibri"
 
 def plot_disagg_M_R_eps(disagg_results, mag_bin_width=0.3, dist_bin_width=20.,
                         **kwargs):
-    IM = 'PGA' # must be a loop for all sheets/IMs
+    IM = 'Sa(1.0)' # must be a loop for all sheets/IMs
     RP = 10000 # must be read and calculated from OQ disagg results
     dist_ulim = 300  # must be read from OQ disagg results 
 
@@ -30,18 +30,18 @@ def plot_disagg_M_R_eps(disagg_results, mag_bin_width=0.3, dist_bin_width=20.,
     d_mag = 0.75*(mag_bin_width * np.ones(len(mag)))
     d_dist = 0.75*(dist_bin_width * np.ones(len(dist)))
 
-    fig = plt.figure(figsize=(5.75,3.3), facecolor='gray')
+    fig = plt.figure(figsize=(5.75,3.3))
     ax = fig.add_subplot(111, projection='3d')
 
-    ax.set_xlabel('Distance R (km)', fontsize=10, labelpad=0.1)
-    ax.set_ylabel('Magnitude', fontsize=10, labelpad=0.1)
-    ax.set_zlabel('Contribution (%)', fontsize=10, rotation=90, labelpad=0.1)
+    ax.set_xlabel('Distance R (km)', fontsize=10, labelpad=0.01)
+    ax.set_ylabel('Magnitude', fontsize=10, labelpad=0.01)
+    ax.set_zlabel('Contribution (%)', fontsize=10, rotation=90, labelpad=0.01)
     ax.zaxis.set_rotate_label(False)
     ax.zaxis._axinfo['juggled'] = (1, 2, 0)
 
-    ax.tick_params(axis='x', labelsize=9, pad=0.1)
-    ax.tick_params(axis='y', labelsize=9, pad=0.1)
-    ax.tick_params(axis='z', labelsize=9, pad=0.1)
+    ax.tick_params(axis='x', labelsize=9, pad=0.01)
+    ax.tick_params(axis='y', labelsize=9, pad=0.01)
+    ax.tick_params(axis='z', labelsize=9, pad=0.01)
 
     ax.view_init(elev=30., azim=-70, roll=0)
 
@@ -53,18 +53,18 @@ def plot_disagg_M_R_eps(disagg_results, mag_bin_width=0.3, dist_bin_width=20.,
     for i, ep in enumerate(eps_list):
         d_aroe = np.array(df_disagg.loc[(df_disagg['eps'] == ep), 'ARoE'])
         ax.bar3d(dist, mag, zpos, d_dist, d_mag, d_aroe,
-                color=colors[i], zsort='min', alpha=0.5, shade=True)
+                color=colors[i], zsort='average', alpha=0.6, shade=True)
         legend_elements.append(mpatches.Patch(facecolor=colors[i],
                                 label=f"\u03B5 = {ep:.2f}"))
         zpos += d_aroe 
 
     fig.legend(handles=legend_elements, loc="lower center", borderaxespad=0.,
                 ncol=num_eps, fontsize=8)
-    plt.tight_layout(rect=[0, 0.05, 1, 0.75])  
+    plt.tight_layout(rect=[0, 0.07, 1, 1])  
     fig.suptitle(f"Disaggregation Plot of {RP:,d}-year {IM}", 
                     fontsize=14, fontweight='bold')
-    # fig.savefig(f'disagg_M-R-eps_{RP:,d}-yr_{IM}.svg')
-    plt.show()
+    fig.savefig(f'disagg_M-R-eps_{RP:,d}-yr_{IM}.svg')
+    # plt.show()
 
 
 if __name__ == "__main__":
