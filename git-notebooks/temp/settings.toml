@@ -1,0 +1,39 @@
+[[catalogues]]
+code = "ISCRB1900-1999"
+name = "ISC Reviewd Bulletin 1900-1999"
+filename = "c:\\Users\\enrico.abcede\\Desktop\\catalogue\\Catalog-Compile\\git-notebooks\\inputs\\1900-1999-PH_ISF_Catalogue.isf"
+type = "isf"
+select_region = false
+
+[[catalogues]]
+code = "ISCRB2000-2009"
+name = "ISC Reviewd Bulletin 2000-2009"
+filename = "c:\\Users\\enrico.abcede\\Desktop\\catalogue\\Catalog-Compile\\git-notebooks\\inputs\\2000-2009-PH_ISF_Catalogue.isf"
+type = "isf"
+select_region = false
+delta_ll = 20
+delta_t = 5
+timezone = 0
+buff_ll = 0.0
+buff_t = 5.0
+use_kms = true
+
+[[catalogues]]
+code = "ISCRB2010-2014"
+name = "ISC Reviewd Bulletin 2010-2014"
+filename = "{:s}"
+type = "isf"
+select_region = false
+
+[[catalogues]]
+code = "ISCRB2015-2021"
+name = "ISC Reviewd Bulletin 2015-2021"
+filename = "{:s}"
+type = "isf"
+select_region = false
+
+[general]
+output_path = "c:\\Users\\enrico.abcede\\Desktop\\catalogue\\Catalog-Compile\\git-notebooks\\temp"
+output_prefix = "merged_"
+log_file = "c:\\Users\\enrico.abcede\\Desktop\\catalogue\\Catalog-Compile\\git-notebooks\\temp\\log.txt"
+region_shp = "c:\\Users\\enrico.abcede\\Desktop\\catalogue\\Catalog-Compile\\git-notebooks\\inputs\\shp\\PH-extents.shp"
