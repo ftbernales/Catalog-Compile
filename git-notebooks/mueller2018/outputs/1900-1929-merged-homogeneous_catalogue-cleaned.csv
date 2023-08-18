@@ -1,5 +1,6 @@
 eventID,Agency,Identifier,year,month,day,hour,minute,second,timeError,longitude,latitude,SemiMajor90,SemiMinor90,ErrorStrike,depth,depthError,magnitude,sigmaMagnitude,Anthropogenic
 
+PS1992029,ps1992-ph,ps1992-ph|ps1992-ph-Ms,1903,12,28,2,56,0.0,,127.0,7.0,,,,60.0,,7.0,nan,
 610548604,ISC-GEM,ISC-GEM|ISC-GEM-Mw,1905,5,31,18,23,32.75,,120.203,18.895,132.9,24.9,,15.0,5.0,6.8,0.46,
 610548608,ISC-GEM,ISC-GEM|ISC-GEM-Mw,1905,7,16,18,46,55.43,,124.03,9.386,274.2,83.8,,35.0,32.0,6.06,0.51,
 610548621,ISC-GEM,ISC-GEM|ISC-GEM-Mw,1905,12,10,18,9,58.89,,125.858,13.445,32.0,18.4,,15.0,6.3,6.8,0.2,
