@@ -8,4 +8,5 @@ build/
 # Pycache files
 *.pyc
 
-
+# Eggs
+*.egg-info/
