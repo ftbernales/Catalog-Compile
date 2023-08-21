@@ -10,3 +10,6 @@ build/
 
 # Notebook
 *.ipynb
+
+# Eggs
+*.egg-info/
