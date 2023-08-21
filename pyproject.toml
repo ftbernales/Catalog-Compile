@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "catcompile"
+version = "0.0.1"
+authors = [
+  { name="ftbernales", email="francisjenner.ae@gmail.com" },
+  { name="stansays"},
+  { name="emabcede"},
+]
+description = "Compiles earthquake catalog databases"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: Windows",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/ftbernales/Catalog-Compile"
+"Bug Tracker" = "https://github.com/ftbernales/Catalog-Compile/issues"

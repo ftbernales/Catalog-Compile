@@ -1,0 +1,4 @@
+global-include README.md, LICENSE
+prune git-notebooks
+prune */notebooks
+prune */__pycache__ 
