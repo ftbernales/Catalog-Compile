@@ -1,0 +1,56 @@
+DATA_TYPE EVENT IMS1.0
+Reviewed ISC Bulletin
+Event   611019465 Mindanao
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2015/01/01 00:26:53.96        0.850   8.2270  125.2380                  34.0               4                          MAN       09078749
+
+Magnitude  Err Nsta Author      OrigID
+mb     4.2          MAN       09078749
+ML     3.0          MAN       09078749
+MS     2.6          MAN       09078749
+
+Event   606930640 Halmahera
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2015/01/01 00:41:07.79   1.15 0.670   2.7849  128.6549  75.2  21.5  71   0.0f         5      155  23.27  85.13     uk IDC       05670441
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.4 0.1    5 IDC       05670441
+mb1    3.6 0.1    5 IDC       05670441
+mb1mx  3.2 0.1   54 IDC       05670441
+mbtmp  3.4 0.1    5 IDC       05670441
+MS     3.6 0.2    1 IDC       05670441
+Ms1    3.6 0.2    1 IDC       05670441
+ms1mx  2.4 0.1   27 IDC       05670441
+DATA_TYPE EVENT IMS1.0
+Event   611476120 Talaud Islands
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2015/01/01 05:14:59.06   1.94 0.920   2.3384  125.1020 189.8  25.3  64   0.0f         3      192  23.93  57.79     uk IDC       05670451
+
+Magnitude  Err Nsta Author      OrigID
+mb     3.3 0.1    3 IDC       05670451
+mb1    3.5 0.1    3 IDC       05670451
+mb1mx  3.3 0.1   41 IDC       05670451
+mbtmp  3.3 0.1    3 IDC       05670451
+MS     3.2 0.2    1 IDC       05670451
+Ms1    3.2 0.2    1 IDC       05670451
+ms1mx  2.5 0.1   23 IDC       05670451
+
+Event   606930653 Mindanao
+   Date       Time        Err   RMS Latitude Longitude  Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist Qual   Author      OrigID
+2015/01/01 08:45:47.60        0.890   5.1760  126.4410                  26.0               9                          MAN       09078751
+2015/01/01 08:45:54.20   2.31 0.730   5.3003  126.2553  48.1  11.8  74 105.0  22.4   12      143   1.88  83.90     uk IDC       05670464
+2015/01/01 08:45:49.39   1.72 2.530   5.2183  126.4389 17.78 12.24  86  57.7  16.7   24   20 134   1.14  83.89 m i ke ISC       09453765
+ (#PRIME)
+
+Magnitude  Err Nsta Author      OrigID
+mb     4.6          MAN       09078751
+ML     3.5          MAN       09078751
+MS     3.4          MAN       09078751
+mb     3.5 0.1   10 IDC       05670464
+mb1    3.6 0.1   10 IDC       05670464
+mb1mx  3.4 0.1   56 IDC       05670464
+mbtmp  3.8 0.1   10 IDC       05670464
+MS     3.0 0.1    4 IDC       05670464
+Ms1    3.0 0.1    4 IDC       05670464
+ms1mx  2.7 0.1   30 IDC       05670464
+mb     3.9 0.2   10 ISC       09453765

@@ -8,8 +8,5 @@ build/
 # Pycache files
 *.pyc
 
-# Notebook
-*.ipynb
-
 # Eggs
 *.egg-info/
