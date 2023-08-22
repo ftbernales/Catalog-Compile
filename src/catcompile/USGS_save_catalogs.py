@@ -1,18 +1,19 @@
+import os
 import json
 import requests
 from datetime import datetime
 import xml.etree.ElementTree as ET
 
-f = open('coords.json')
-coords = json.load(f)
-LAT = coords['center']['latitude']
-LON = coords['center']['longitude']
+with open(os.path.join(os.path.dirname(__file__), 'coords.json')) as f:
+    coords = json.load(f)
+    LAT = coords['center']['latitude']
+    LON = coords['center']['longitude']
 
-DATE = datetime.today().strftime('%Y.%m.%d')
-NORTH = coords['boundary']['north']
-SOUTH = coords['boundary']['south']
-EAST = coords['boundary']['east']
-WEST = coords['boundary']['west']
+    DATE = datetime.today().strftime('%Y.%m.%d')
+    NORTH = coords['boundary']['north']
+    SOUTH = coords['boundary']['south']
+    EAST = coords['boundary']['east']
+    WEST = coords['boundary']['west']
 
 def usgs_save_catalog(file, extension, lat, lon, mindepth, maxdepth, radius):
     filename = file + DATE + '.' + extension
@@ -54,20 +55,21 @@ def usgs_save_catalog(file, extension, lat, lon, mindepth, maxdepth, radius):
         tree.write(filename)
 
 
-usgs_save_catalog('Vicinity_100km_', 'csv', LAT, LON, 0, 800, 100)
-usgs_save_catalog('Vicinity_100km_', 'kml', LAT, LON, 0, 800, 100)
+if __name__ == '__main__':
+    usgs_save_catalog('Vicinity_100km_', 'csv', LAT, LON, 0, 800, 100)
+    usgs_save_catalog('Vicinity_100km_', 'kml', LAT, LON, 0, 800, 100)
 
-usgs_save_catalog('Shallow_500km_', 'csv', LAT, LON, 0, 50, 500)
-usgs_save_catalog('Shallow_500km_', 'kml', LAT, LON, 0, 50, 500)
+    usgs_save_catalog('Shallow_500km_', 'csv', LAT, LON, 0, 50, 500)
+    usgs_save_catalog('Shallow_500km_', 'kml', LAT, LON, 0, 50, 500)
 
-usgs_save_catalog('Mid_Crust_500km_', 'csv', LAT, LON, 50, 100, 500)
-usgs_save_catalog('Mid_Crust_500km_', 'kml', LAT, LON, 50, 100, 500)
+    usgs_save_catalog('Mid_Crust_500km_', 'csv', LAT, LON, 50, 100, 500)
+    usgs_save_catalog('Mid_Crust_500km_', 'kml', LAT, LON, 50, 100, 500)
 
-usgs_save_catalog('Deep_500km_', 'csv', LAT, LON, 100, 800, 500)
-usgs_save_catalog('Deep_500km_', 'kml', LAT, LON, 100, 800, 500)
+    usgs_save_catalog('Deep_500km_', 'csv', LAT, LON, 100, 800, 500)
+    usgs_save_catalog('Deep_500km_', 'kml', LAT, LON, 100, 800, 500)
 
-usgs_save_catalog('All_Depths_500km_', 'csv', LAT, LON, 0, 800, 500)
-usgs_save_catalog('All_Depths_500km_', 'kml', LAT, LON, 0, 800, 500)
+    usgs_save_catalog('All_Depths_500km_', 'csv', LAT, LON, 0, 800, 500)
+    usgs_save_catalog('All_Depths_500km_', 'kml', LAT, LON, 0, 800, 500)
 
-usgs_save_catalog('Overall_Seismicity_', 'csv', '', '', 0, 800, '')
-usgs_save_catalog('Overall_Seismicity_', 'kml', '', '', 0, 800, '')
+    usgs_save_catalog('Overall_Seismicity_', 'csv', '', '', 0, 800, '')
+    usgs_save_catalog('Overall_Seismicity_', 'kml', '', '', 0, 800, '')
