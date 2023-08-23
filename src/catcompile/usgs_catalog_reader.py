@@ -1,5 +1,6 @@
 import pandas as pd
 import datetime
+from warnings import warn
 from openquake.cat.parsers.base import BaseCatalogueDatabaseReader
 from openquake.cat.parsers.isf_catalogue_reader import ISFReader
 from openquake.cat.isf_catalogue import (Magnitude, Location, Origin,
@@ -67,6 +68,12 @@ class UsgsCsvReader(BaseCatalogueDatabaseReader):
         df = df.loc[origin_boolmask & mag_boolmask]
 
         # Replace contributing agencies with ISC agency codes for consistency
+        if locationSource[~locationSource.isin(
+            list(USGS_to_ISC_AGENCIES.keys()))].any():
+            warn("Origin location source agency not found in conversion keys.")
+        if magSource[~magSource.isin(
+            list(USGS_to_ISC_AGENCIES.keys()))].any():
+            warn("Magnitude source agency not found in conversion keys.")
         locationSource.replace(USGS_to_ISC_AGENCIES, inplace=True)
         magSource.replace(USGS_to_ISC_AGENCIES, inplace=True)
         
