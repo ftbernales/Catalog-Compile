@@ -1,6 +1,6 @@
 import pandas as pd
 import datetime
-from openquake.cat.parsers.base import (BaseCatalogueDatabaseReader,_to_str)
+from openquake.cat.parsers.base import BaseCatalogueDatabaseReader
 from openquake.cat.parsers.isf_catalogue_reader import ISFReader
 from openquake.cat.isf_catalogue import (Magnitude, Location, Origin,
                                          Event, ISFCatalogue)
@@ -14,9 +14,13 @@ class UsgsCsvReader(BaseCatalogueDatabaseReader):
     """
     def __init__(self, filename: str, selected_origin_agencies=[],
                  selected_magnitude_agencies=[]):
-        super(UsgsCsvReader, self).__init__(filename,
-                                selected_origin_agencies,
-                                selected_magnitude_agencies)
+        super(UsgsCsvReader, self).__init__(filename, selected_origin_agencies,
+                                                    selected_magnitude_agencies)
+        self.rejected_catalogue = []
+        self.selected_origin_agencies = [s.upper() 
+                                         for s in selected_origin_agencies]
+        self.selected_magnitude_agencies = [s.upper() 
+                                         for s in selected_magnitude_agencies]
 
     def _get_event(self, event: Event, origins: Origin, magnitudes: Magnitude):
         """
@@ -37,65 +41,99 @@ class UsgsCsvReader(BaseCatalogueDatabaseReader):
 
         origins = []
         magnitudes = []
-        for i in range(len(df.index)):
-            eventID = _to_str(df.at[i, 'eventID'])
-            year = df.at[i, 'year']
-            month = df.at[i, 'month']
-            day = df.at[i, 'day']
-            hour = df.at[i, 'hour']
-            minute = df.at[i, 'minute']
-            second = df.at[i, 'second']
-            latitude = df.at[i, 'latitude']
-            longitude = df.at[i, 'longitude']
-            depth = df.at[i, 'depth']
-            magnitude = df.at[i, 'magnitude']
-            magnitudeType = _to_str(df.at[i, 'magnitudeType'])
-            nst = df.at[i, 'nst']
-            gap = df.at[i, 'gap']
-            dmin = df.at[i, 'dmin']
-            rms = df.at[i, 'rms']
-            type = _to_str(df.at[i, 'type'])
-            horizontalError = df.at[i, 'horizontalError']
-            depthError = df.at[i, 'depthError']
-            magError = df.at[i, 'magError']
-            magNst = df.at[i, 'magNst']
-            status = _to_str(df.at[i, 'status'])
-            locationSource = _to_str(df.at[i, 'locationSource'])
-            magSource = _to_str(df.at[i, 'magSource'])
+        
+        locationSource = (df['locationSource']).str.upper()
+        magSource = (df['magSource']).str.upper() # all caps
 
-            date = datetime.date(year, month, day)
-            time = datetime.time(int(hour), int(minute), int(second), 
-                                 int(1.E6*(second % 1)))
-            origin_metadata = {
-                'Nstations': nst, 'AzimuthGap': gap,
-                'minDist': dmin, 'EventType': type}
+        if len(self.selected_origin_agencies):
+            origin_boolmask = locationSource.isin(self.selected_origin_agencies)
+            # Origin not an instance of (or authored by) a selected agency
+            self.rejected_catalogue.append(
+                df.loc[origin_boolmask].values.tolist())
+        else: 
+            origin_boolmask = pd.Series([True] * len(df.index))
+
+        if len(self.selected_magnitude_agencies):
+            mag_boolmask = magSource.isin(self.selected_magnitude_agencies)
+            # Magnitude not an instance of (or authored by) selected agency
+            self.rejected_catalogue.append(df.loc[mag_boolmask].values.tolist())
+        else:
+            mag_boolmask = pd.Series([True] * len(df.index))
+
+        # filter out rejected events and update dataframe
+        df = df.loc[origin_boolmask & mag_boolmask]
+
+        eventID = (df['eventID'])
+        year = df['year']
+        month = df['month']
+        day = df['day']
+        hour = df['hour']
+        minute = df['minute']
+        second = df['second']
+        latitude = df['latitude']
+        longitude = df['longitude']
+        depth = df['depth']
+        magnitude = df['magnitude']
+        magnitudeType = (df['magnitudeType'])
+        nst = df['nst']
+        gap = df['gap']
+        dmin = df['dmin']
+        rms = df['rms']
+        type = (df['type'])
+        depthError = df['depthError']
+        magError = df['magError']
+        magNst = df['magNst']
+
+        date = list(
+            map(lambda y, m, d: datetime.date(y, m, d), year, month, day))
+        time = list(
+            map(lambda h, m, s: datetime.time(int(h), int(m), int(s), 
+                                              int(1.E6*(s % 1))), 
+                hour, minute, second))
+
+        origin_metadata = list(
+            map(lambda n, g, d, t: {'Nstations': n, 'AzimuthGap': g, 
+                    'minDist': d, 'EventType': t}, 
+                nst, gap, dmin, type))
+                
+        location = list(
+            map(lambda id, lon, lat, dep, deperr: Location(id, lon, lat, dep, 
+                    depth_error=deperr), 
+                eventID, longitude, latitude, depth, depthError))
+
+        origins = list(
+            map(lambda id, d, t, loc, locsrc, rms, meta:
+                Origin(id, d, t, loc, locsrc, is_prime=True, time_rms=rms, 
+                    metadata=meta),
+                eventID, date, time, location, locationSource, rms, 
+                    origin_metadata)) 
+        
+        magnitudes = list(
+            map(lambda eid, oid, mag, magsrc, scale, magerr, magnst:
+                Magnitude(eid, oid, mag, magsrc, scale=scale, sigma=magerr, 
+                    stations=magnst),
+                eventID, eventID, magnitude, magSource, magnitudeType, magError, 
+                    magNst))
+        
+        events = list(
+            map(lambda eid, origs, mags:
+                Event(eid, origs, mags),
+                eventID, origins, magnitudes))
+        
+        # build event then append to catalog
+        print(f'Length of events = {len(events)}')
+        print(f'Length of origins = {len(origins)}')
+        print(f'Length of magnitudes = {len(magnitudes)}')
+        [self._get_event(item, origins, magnitudes) for item in events]
             
-            location = Location(eventID, longitude, latitude, depth, 
-                depth_error=depthError)
-            
-            if len(self.selected_origin_agencies) and \
-                locationSource.upper() not in \
-                    [origs.upper() for origs in self.selected_origin_agencies]:
-                # Origin not an instance of (or authored by) a selected agency
-                continue
-            origins.append(
-                Origin(eventID, date, time, location, locationSource, 
-                    is_prime=True, time_rms=rms, metadata=origin_metadata)) 
-            
-            if len(self.selected_magnitude_agencies) and \
-                magSource.upper() not in \
-                    [mags.upper() for mags in self.selected_magnitude_agencies]:
-                # Magnitude not an instance of (or authored by) selected agency
-                continue
-            magnitudes.append(
-                Magnitude(eventID, eventID, magnitude, magSource, 
-                    scale=magnitudeType, sigma=magError, stations=magNst)) 
-
-            event = Event(eventID, origins, magnitudes)
-            self._get_event(event, origins, magnitudes)
-
-            print(f'[{i+1}] Event {eventID} successfully appended.')
-
+        print("Finished building events...")
+        if len(self.rejected_catalogue):
+            # Turn list of rejected events into its own instance of ISFCatalogue
+            self.rejected_catalogue = ISFCatalogue(
+                identifier + "-R",
+                name + " - Rejected",
+                events=self.rejected_catalogue)
+        print("Reading event ids...")
         self.catalogue.ids = [e.id for e in self.catalogue.events]
 
         return self.catalogue
