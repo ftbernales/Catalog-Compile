@@ -28,6 +28,7 @@ USGS_FILE = 'cat-collections/usgs_formatted'
 PS_FILE = 'cat-collections/ps1992-ph-cat'
 MAN_FILE = 'cat-collections/phivolcs-combined-minM4pt5'
 MERGED_FILE = 'cat-collections/merged-catalog'
+PH_EXTENTS = 'utils/PH-extents'
 
 def homogenize():
     # STEP 1: READ AND IMPORT CATALOGS
