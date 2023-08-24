@@ -8,13 +8,22 @@ from openquake.cat.isf_catalogue import (Magnitude, Location, Origin,
                                          
 
 USGS_to_ISC_AGENCIES = {'US': 'NEIC', 'PIVS': 'MAN', 'HRV': 'HRVD', 
-    'NC': 'NCEDC'}
+    'NC': 'NCEDC', 'GCMT': 'GCMT'}
 
 class UsgsCsvReader(BaseCatalogueDatabaseReader):
     """
-    Class to read an CSV formatted USGS NEIC earthquake catalog considering only
-    the origin agencies, the magnitude agencies, and the magnitude types
-    defined by the user
+    Class to read an CSV formatted USGS NEIC earthquake catalog into ISF format
+    considering only the origin agencies, the magnitude agencies, and the 
+    magnitude types defined by the user
+
+    :param filename:
+        A string representing the path to a csv file.
+    :param selected_origin_agencies:
+        A list of origin agency codes to select (default is empty list)
+    :param selected_magnitude_agencies:
+        A list of magnitude agency codes to select (default is empty list)
+    :returns catalogue:
+        An instance of :class:`openquake.cat.isf_catalogue.ISFCatalogue`
     """
     def __init__(self, filename: str, selected_origin_agencies=[],
                  selected_magnitude_agencies=[]):
@@ -111,13 +120,13 @@ class UsgsCsvReader(BaseCatalogueDatabaseReader):
                 nst, gap, dmin, type))
                 
         location = list(
-            map(lambda id, lon, lat, dep, deperr: Location(id, lon, lat, dep, 
+            map(lambda oid, lon, lat, dep, deperr: Location(oid, lon, lat, dep, 
                     depth_error=deperr), 
                 eventID, longitude, latitude, depth, depthError))
 
         origins = list(
-            map(lambda id, d, t, loc, locsrc, rms, meta:
-                Origin(id, d, t, loc, locsrc, is_prime=True, time_rms=rms, 
+            map(lambda oid, d, t, loc, locsrc, rms, meta:
+                Origin(oid, d, t, loc, locsrc, is_prime=True, time_rms=rms, 
                     metadata=meta),
                 eventID, date, time, location, locationSource, rms, 
                     origin_metadata)) 
@@ -135,16 +144,18 @@ class UsgsCsvReader(BaseCatalogueDatabaseReader):
                 eventID, origins, magnitudes))
         
         # build event then append to catalog
-        [self._get_event(item, origins, magnitudes) for item in events]
+        for i, event_item in enumerate(events):
+            self._get_event(event_item, [origins[i]], [magnitudes[i]])
             
-        print("Finished building events...")
         if len(self.rejected_catalogue):
             # Turn list of rejected events into its own instance of ISFCatalogue
             self.rejected_catalogue = ISFCatalogue(
                 identifier + "-R",
                 name + " - Rejected",
                 events=self.rejected_catalogue)
-        print("Reading event ids...")
+        
         self.catalogue.ids = [e.id for e in self.catalogue.events]
-
+        from collections import Counter
+        item_counts = Counter(self.catalogue.ids)
+        
         return self.catalogue
