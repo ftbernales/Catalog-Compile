@@ -1,7 +1,10 @@
 import datetime as dt
 import os
 
+import geopandas as gpd
+import numpy as np
 import openquake.cat.catalogue_query_tools as cqt
+import pandas as pd
 from openquake.cat.hmg import info
 from openquake.cat.isc_homogenisor import (DuplicateFinder, DynamicHomogenisor,
                                            HomogenisorPreprocessor,
@@ -168,6 +171,33 @@ def geographic_selection(catalogue, shapefile_fname, buffer_dist=0.0):
     aaa.to_file("tmp/within.geojson", driver='GeoJSON')
 
     return catalogue.get_catalogue_subset(list(aaa["iloc"].values))
+
+def coords_prime_origins(catalogue):
+    """
+    Given an instance of an ISFCatalogue returns an array where each row
+    contains the longitude, latitude, the index of location and the one
+    of the origin.
+
+    :param catalogue:
+        An :class:`openquake.cat.isf_catalogue.ISFCatalogue` instance
+    :returns:
+        An instance of :class:`numpy.ndarray`. The cardinality of the output
+        has a cardinality equal to the number of earthquakes in the
+        catalogue with a prime solution.
+    """
+    # Get coordinates of primes events
+    data = []
+    for iloc, event in enumerate(catalogue.events):
+        for iori, origin in enumerate(event.origins):
+            if not origin.is_prime and len(event.origins) > 1:
+                continue
+            else:
+                if len(origin.magnitudes) == 0:
+                    continue
+            # Saving information regarding the prime origin
+            data.append((origin.location.longitude,
+                         origin.location.latitude, iloc, iori))
+    return np.array(data)
 
 
 if __name__ == '__main__':
