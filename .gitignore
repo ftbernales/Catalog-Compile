@@ -13,3 +13,6 @@ build/
 
 # Map data
 *.kml
+
+# Temp files
+*tmp/
