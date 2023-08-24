@@ -108,7 +108,10 @@ def homogenize():
     if os.path.exists(database_file):
         os.remove(database_file)
     _ = merged_cat.build_dataframe(hdf5_file=database_file)
+    merged_cat = geographic_selection(merged_cat, PH_EXTENTS + '.shp')
     
+    total_events = merged_cat.get_number_events()
+    print(f"Merged PH catalog contains: {total_events} events.")
     merged_db = cqt.CatalogueDB(database_file)
     agency_count = cqt.get_agency_magtype_statistics(merged_db)
 
@@ -118,6 +121,53 @@ def homogenize():
         ["ISC-GEM", "ISC-EHB", "EHB", "ISC", "IDC", "NEIC", "NEIS", "USCGS", 
         "NIED", "GCMT", "GUTE", "PAS", "PS", "MAN"])
     ]
+
+def geographic_selection(catalogue, shapefile_fname, buffer_dist=0.0):
+    """
+    Given a catalogue and a shapefile with a polygon or a set of polygons,
+    select all the earthquakes inside the union of all the polygons and
+    return a new catalogue instance.
+
+    :param catalogue:
+        An instance of :class:`openquake.cat.isf_catalogue.ISFCatalogue`
+    :param shapefile_fname:
+        Name of a shapefile
+    :param buffer_dist:
+        A distance in decimal degrees
+    :returns:
+        An instance of :class:`openquake.cat.isf_catalogue.ISFCatalogue`
+    """
+
+    # Getting info on prime events
+    data = coords_prime_origins(catalogue)
+    tmp = np.array(data[:, 2:4], dtype=int)
+
+    # Create geodataframe with the catalogue
+    origins = pd.DataFrame(tmp, columns=['iloc', 'iori'])
+    tmp = gpd.points_from_xy(data[:, 0], data[:, 1])
+    origins = gpd.GeoDataFrame(origins, geometry=tmp, crs="EPSG:4326")
+
+    # Reading shapefile and dissolving polygons into a single one
+    boundaries = gpd.read_file(shapefile_fname)
+    boundaries['dummy'] = 'dummy'
+    geom = boundaries.dissolve(by='dummy').geometry[0]
+
+    # Adding a buffer - Assuming units are decimal degreess
+    if buffer_dist > 0:
+        geom = geom.buffer(buffer_dist)
+
+    # Selecting origins - Tried two methods both give the same result
+    # pip = origins.within(geom)
+    # aaa = origins.loc[pip]
+    tmpgeo = {'col1': ['tmp'], 'geometry': [geom]}
+    gdf = gpd.GeoDataFrame(tmpgeo, crs="EPSG:4326")
+    aaa = gpd.sjoin(origins, gdf, how="inner", op='intersects')
+
+    # This is for checking purposes
+    aaa.to_file("tmp/within.geojson", driver='GeoJSON')
+
+    return catalogue.get_catalogue_subset(list(aaa["iloc"].values))
+
 
 if __name__ == '__main__':
     homogenize()
