@@ -1,0 +1,73 @@
+import sys
+import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+import numpy as np
+import pandas as pd
+
+plt.rcParams["font.family"] = "Calibri"
+
+def plot_disagg_M_R_eps(disagg_results, mag_bin_width=0.3, dist_bin_width=20.,
+                        **kwargs):
+    IM = 'Sa(1.0)' # must be a loop for all sheets/IMs
+    RP = 10000 # must be read and calculated from OQ disagg results
+    dist_ulim = 300  # must be read from OQ disagg results 
+
+    df = pd.read_excel(disagg_results, sheet_name=None, skiprows=1)
+    df_disagg = df.get(IM)
+    df_disagg = df_disagg.loc[df_disagg['dist'] <= dist_ulim]
+
+    eps = np.array(pd.unique(df_disagg['eps']))
+    eps_list = np.unique(eps)
+    num_eps = len(eps_list)
+    df_data = df_disagg.loc[df_disagg['eps'] == eps_list[0]]
+
+    mag = np.array(df_data['mag']) - mag_bin_width/2.
+    dist = np.array(df_data['dist']) - dist_bin_width/2.
+    aroe = np.array(df_data['ARoE'])
+
+    # Get bin widths to get length and width of bars
+    d_mag = 0.75*(mag_bin_width * np.ones(len(mag)))
+    d_dist = 0.75*(dist_bin_width * np.ones(len(dist)))
+
+    fig = plt.figure(figsize=(5.75,3.3))
+    ax = fig.add_subplot(111, projection='3d')
+
+    ax.set_xlabel('Distance R (km)', fontsize=10, labelpad=0.01)
+    ax.set_ylabel('Magnitude', fontsize=10, labelpad=0.01)
+    ax.set_zlabel('Contribution (%)', fontsize=10, rotation=90, labelpad=0.01)
+    ax.zaxis.set_rotate_label(False)
+    ax.zaxis._axinfo['juggled'] = (1, 2, 0)
+
+    ax.tick_params(axis='x', labelsize=9, pad=0.01)
+    ax.tick_params(axis='y', labelsize=9, pad=0.01)
+    ax.tick_params(axis='z', labelsize=9, pad=0.01)
+
+    ax.view_init(elev=30., azim=-70, roll=0)
+
+    # Loop over all coord values and then stack the bars for similar locations
+    # colors = cm.tab20(np.linspace(0, 1, num_eps))
+    colors = ['b', 'r', 'y', 'g', 'c', 'm'] # extend for arbitrary number of eps bins
+    zpos = np.zeros_like(aroe)
+    legend_elements = []
+    for i, ep in enumerate(eps_list):
+        d_aroe = np.array(df_disagg.loc[(df_disagg['eps'] == ep), 'ARoE'])
+        ax.bar3d(dist, mag, zpos, d_dist, d_mag, d_aroe,
+                color=colors[i], zsort='average', alpha=0.6, shade=True)
+        legend_elements.append(mpatches.Patch(facecolor=colors[i],
+                                label=f"\u03B5 = {ep:.2f}"))
+        zpos += d_aroe 
+
+    fig.legend(handles=legend_elements, loc="lower center", borderaxespad=0.,
+                ncol=num_eps, fontsize=8)
+    plt.tight_layout(rect=[0, 0.07, 1, 1])  
+    fig.suptitle(f"Disaggregation Plot of {RP:,d}-year {IM}", 
+                    fontsize=14, fontweight='bold')
+    fig.savefig(f'disagg_M-R-eps_{RP:,d}-yr_{IM}.svg')
+    # plt.show()
+
+
+if __name__ == "__main__":
+    disagg_results = '(SHA) Disaggregation Plots (M-R-Eps) R0 2022.12.14.xlsx'
+    
+    plot_disagg_M_R_eps(disagg_results)
