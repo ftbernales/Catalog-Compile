@@ -146,34 +146,54 @@ def phivolcs_ms(magnitude):
     """
     own regression
     """
-    if magnitude > 6.5:
-        return 0.686 * magnitude + 1.997     
+    if magnitude < 5.8:
+        return 0.407 * magnitude + 3.225  
     else:
-        return 0.857 * magnitude + 0.888
+        return 1.470 * magnitude - 2.937
 
 def phivolcs_ms_sigma(magnitude):
     """
     own regression
     """
-    if magnitude > 6.5:
-        return 0.072
+    if magnitude < 5.8:
+        return 0.223
     else:
-        return 0.185
+        return 0.255
 
 def phivolcs_mw(magnitude):
     """
     own regression
     """
-    if magnitude > 6.5:
-        return 1.072 * magnitude - 0.562     
-    else:
-        return 0.887 * magnitude + 0.640
+    return 0.944 * magnitude + 0.362   
 
 def phivolcs_mw_sigma(magnitude):
     """
     own regression
     """
-    if magnitude > 6.5:
-        return 0.114
-    else:
-        return 0.116
+    return 0.104
+
+def phivolcs_mb(magnitude):
+    """
+    own regression
+    """
+    return 0.998 * magnitude - 0.305   
+
+
+def phivolcs_mb_sigma(magnitude):
+    """
+    own regression
+    """
+    return 0.350
+
+def phivolcs_mL(magnitude):
+    """
+    own regression
+    """
+    return 0.979 * magnitude + 0.711
+
+
+def phivolcs_mL_sigma(magnitude):
+    """
+    own regression
+    """
+    return 0.300
