@@ -1,0 +1,13 @@
+{
+  "center": { 
+    "latitude": 14.36574, 
+    "longitude": 121.400784 
+  },
+    
+  "boundary": { 
+    "north": 21.1, 
+    "south": 4.00, 
+    "east": 128.5, 
+    "west": 116.1 
+  }
+}
