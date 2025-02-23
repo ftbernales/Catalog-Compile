@@ -64,6 +64,7 @@ def download_overall_seismicity(output_dir=None):
     file_parent = os.path.join(output_dir, 'Overall_Seismicity_')
     usgs_save_catalog(file_parent, 'csv', '', '', 0, 800, '')
     usgs_save_catalog(file_parent, 'kml', '', '', 0, 800, '')
+    return file_parent
 
 
 def serialize_usgs(filename):
