@@ -1,17 +1,17 @@
 import os
 import json
 import requests
-from datetime import datetime
+from datetime import date
 import xml.etree.ElementTree as ET
 import pandas as pd
 
+DATE = date(2025, 1, 31).strftime('%Y.%m.%d')
 
 with open(os.path.join(os.path.dirname(__file__), 'coords.json')) as f:
     coords = json.load(f)
     LAT = coords['center']['latitude']
     LON = coords['center']['longitude']
 
-    DATE = datetime.today().strftime('%Y.%m.%d')
     NORTH = coords['boundary']['north']
     SOUTH = coords['boundary']['south']
     EAST = coords['boundary']['east']
@@ -56,16 +56,15 @@ def usgs_save_catalog(file, extension, lat, lon, mindepth, maxdepth, radius):
         ET.register_namespace('', "http://www.opengis.net/kml/2.2")
         tree.write(filename)
 
-def download_overall_seismicity(output_dir=None):
+def download_overall_seismicity(output_dir=None, ext='csv'):
     if output_dir is None:
         # Use current dir
         output_dir = os.path.join(os.path.dirname(__file__), 'cat-collections/')
     
     file_parent = os.path.join(output_dir, 'Overall_Seismicity_')
-    usgs_save_catalog(file_parent, 'csv', '', '', 0, 800, '')
-    usgs_save_catalog(file_parent, 'kml', '', '', 0, 800, '')
-    return file_parent
-
+    usgs_save_catalog(file_parent, ext, '', '', 0, 800, '')
+    output_file = file_parent + DATE + '.' + ext
+    return output_file
 
 def serialize_usgs(filename):
     """
