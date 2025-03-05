@@ -1,0 +1,5 @@
+[general]
+delta_ll = 110
+delta_t = 60
+use_kms = true
+output_path = "../tmp/"

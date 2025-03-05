@@ -21,4 +21,11 @@ classifiers = [
 
 [project.urls]
 "Homepage" = "https://github.com/ftbernales/Catalog-Compile"
+"Repository" = "https://github.com/ftbernales/Catalog-Compile"
 "Bug Tracker" = "https://github.com/ftbernales/Catalog-Compile/issues"
+
+[tool.setuptools.exclude-package-data]
+"*" = [
+	"tests",
+	"tests.*"
+]

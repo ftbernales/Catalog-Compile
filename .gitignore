@@ -10,3 +10,13 @@ build/
 
 # Eggs
 *.egg-info/
+
+# Map data
+*.kml
+
+# Temp files
+*tmp/
+
+# Some input files
+coords.*
+*.par
