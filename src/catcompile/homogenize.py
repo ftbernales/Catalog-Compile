@@ -16,6 +16,8 @@ from openquake.cat.parsers.isf_catalogue_reader import ISFReader
 import catcompile.regressions as reg
 from catcompile.usgs_catalog_reader import UsgsCsvReader
 from itertools import pairwise
+import warnings
+warnings.filterwarnings("ignore")
 
 """
 Tools for creating homogenized catalog in terms of magnitude and origin
@@ -24,6 +26,7 @@ REJECT_KEYS = ["mining", "geothermal", "explosion", "quarry", "reservoir",
                 "rockburst"]
 
 DIRNAME = os.path.dirname(__file__)
+
 ISF_FILE = 'cat-collections/PH_ISF_Catalogue'
 ISCGEM_FILE = 'cat-collections/isc-gem-cat'
 GCMT_FILE = 'cat-collections/gcmt-cat-1976-2020'
@@ -31,9 +34,11 @@ USGS_FILE = 'cat-collections/usgs_formatted'
 PS_FILE = 'cat-collections/ps1992-ph-cat'
 MAN_FILE = 'cat-collections/phivolcs-combined-minM4pt5'
 MERGED_FILE = 'cat-collections/merged-catalog'
+
 PH_EXTENTS = 'utils/PH-extents'
 
-def homogenize():
+
+def merge():
     # STEP 1: READ AND IMPORT CATALOGS
     ## 1- Read ISC
     isc_parser = ISFReader(os.path.join(DIRNAME, ISF_FILE + '.isf'), 
@@ -77,7 +82,7 @@ def homogenize():
     ps_parser = GenericCataloguetoISFParser(
         os.path.join(DIRNAME, PS_FILE + ".csv"))
     ps_cat = ps_parser.parse("PS", "PS-PH")
-    print(f"USGS-NEIC Catalog contains: {ps_cat.get_number_events()} events.")
+    print(f"PS92 Catalog contains: {ps_cat.get_number_events()} events.")
 
     _, mag_df = ps_cat.build_dataframe()
     x1, _ = info.get_table_mag_agency(mag_df)
@@ -112,19 +117,25 @@ def homogenize():
     if os.path.exists(database_file):
         os.remove(database_file)
     _ = merged_cat.build_dataframe(hdf5_file=database_file)
-    merged_cat = geographic_selection(merged_cat, PH_EXTENTS + '.shp')
+    merged_cat = geographic_selection(merged_cat, 
+                                      os.path.join(DIRNAME, PH_EXTENTS + '.shp')
+                                      )
     
     total_events = merged_cat.get_number_events()
     print(f"Merged PH catalog contains: {total_events} events.")
     merged_db = cqt.CatalogueDB(database_file)
     agency_count = cqt.get_agency_magtype_statistics(merged_db)
+    magAgency = cqt.get_agency_magnitude_count(merged_db)
+    print(magAgency)
 
-    ### Clear whitespace before? ###
+
+def homogenize():
     origin_rules = [
-        ("1900/01/01 - 2023/12/31", 
-        ["ISC-GEM", "ISC-EHB", "EHB", "ISC", "IDC", "NEIC", "NEIS", "USCGS", 
-        "NIED", "GCMT", "GUTE", "PAS", "PS", "MAN"])
+    ("1900/01/01 - 2023/12/31", 
+    ["ISC-GEM", "ISC-EHB", "EHB", "ISC", "IDC", "NEIC", "NEIS", "USCGS", 
+    "NIED", "GCMT", "GUTE", "PAS", "PS", "MAN"])
     ]
+
 
 def geographic_selection(catalogue, shapefile_fname, buffer_dist=0.0):
     """
@@ -201,4 +212,5 @@ def coords_prime_origins(catalogue):
 
 
 if __name__ == '__main__':
-    homogenize()
+    merge()
+    # homogenize()
