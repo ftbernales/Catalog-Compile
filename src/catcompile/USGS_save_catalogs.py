@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 import pandas as pd
 
 DATE = date(2025, 1, 31).strftime('%Y.%m.%d')
+MIN_MAG = 4.5
 
 with open(os.path.join(os.path.dirname(__file__), 'coords.json')) as f:
     coords = json.load(f)
@@ -23,7 +24,7 @@ def usgs_save_catalog(file, extension, lat, lon, mindepth, maxdepth, radius):
     url = 'https://earthquake.usgs.gov/fdsnws/event/1/query?' + \
             'starttime=1900-01-01' + \
             '&orderby=magnitude' + \
-            '&minmagnitude=4.5' + \
+            '&minmagnitude=' + str(MIN_MAG) + \
             '&format=' + str(extension) + \
             '&maxlatitude=' + str(NORTH) + \
             '&minlatitude=' + str(SOUTH) + \
