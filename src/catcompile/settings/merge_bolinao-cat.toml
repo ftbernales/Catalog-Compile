@@ -1,0 +1,85 @@
+[general]
+output_path = "./../h5/"
+output_prefix = "bolinao-cat_"
+region_buffer = 5.0
+region_shp = "../utils/PH-extents.shp"
+log_file = "../tmp/logs.csv"
+
+[[catalogues]]
+code = "ISC-GEM"
+name = "ISC GEM Version 11.0"
+filename = "../cat-collections/isc-gem-cat.csv"
+type = "csv"
+delta_ll = 110
+delta_t =  60
+buff_ll = 0.0
+buff_t = 5.0
+use_kms = true
+#use_ids = true
+select_region = true
+
+[[catalogues]]
+# ISC Reviewed Bulletin
+code = "ISC-RB"
+name = "ISC-PH"
+filename = "../cat-collections/PH_ISF_Catalogue.isf"
+type = "isf"
+delta_ll = 110
+delta_t =  60
+buff_ll = 0.0
+buff_t = 5.0
+use_kms = true
+#use_ids = true
+
+[[catalogues]]
+# GCMT Jan76_Dec20
+code = "GCMT"
+name = "GCMT-PH"
+filename = "../cat-collections/gcmt-cat-1976-2020.txt"
+type = "gcmt"
+delta_ll = 110
+delta_t =  60
+buff_ll = 0.0
+buff_t = 5.0
+use_kms = true
+#use_ids = true
+select_region = true
+
+[[catalogues]]
+# USGS NEIC COMCAT
+code = "ISC-GEM"
+name = "USGS-PH"
+filename = "../cat-collections/usgs_formatted.csv"
+type = "csv"
+delta_ll = 110
+delta_t =  60
+buff_ll = 0.0
+buff_t = 5.0
+use_kms = true
+#use_ids = true
+
+[[catalogues]]
+# Pacheco and Stykes 1992
+code = "PS"
+name = "PS-PH"
+filename = "../cat-collections/ps1992-ph-cat.csv"
+type = "csv"
+delta_ll = 110
+delta_t =  60
+buff_ll = 0.0
+buff_t = 5.0
+use_kms = true
+#use_ids = true
+
+[[catalogues]]
+# PHIVOLCS Jan15-Jul24
+code = "MAN"
+name = "MAN-CAT"
+filename = "../cat-collections/phivolcs-combined-minM4pt5.csv"
+type = "csv"
+delta_ll = 110
+delta_t =  60
+buff_ll = 0.0
+buff_t = 5.0
+use_kms = true
+#use_ids = true

@@ -1,0 +1,31 @@
+# This file contains a set of rules for the selection of origins and
+# the homogenisation of magnitudes. Used for the construction of the global catalogue
+# This version uses ad-hoc conversion parameters for ms and mb magnitudes, and that all Mw magnitudes are consistent
+#
+# Origin selection
+#
+
+[origin]
+# Specify preferred origin when multiple are available.
+ranking = ["ISC-GEM", "ISC-EHB", "EHB", "ISC", "IDC", "NEIC", "NEIS", "USCGS", 
+        "NIED", "GCMT", "GUTE", "PAS", "PS", "MAN"]
+
+#
+# Magnitude-conversion: Mw
+#
+# These are magnitudes we are happy with: don't convert
+# Homogenise all catalogues to iscgem Mw
+[magnitude.ISCGEM.Mw]
+low_mags = [0.0]
+conv_eqs = ["m"]
+
+[magnitude.local.mw]
+low_mags = [0.0]
+conv_eqs = ["0.1079 + 0.9806 * m"]
+std_devs = [0.0063, 0.0011]
+
+
+[magnitude.local.mww]
+low_mags = [0.0]
+conv_eqs = ["0.1928 + 0.9757 * m"]
+std_devs = [0.0091, 0.0016]
