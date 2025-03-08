@@ -27,13 +27,19 @@ def toml_to_csv(toml_file, output_filename=None):
         
         z1 = fault['Fault_Geometry']['Upper_Depth']
         z2 = fault['Fault_Geometry']['Lower_Depth']
-        df0 = DataFrame([[fault['Fault_Name'], fault['Slip_Type'], 
-                        max_mag,
-                        fault['Slip']['Value'], fault['Slip']['Weight'],
-                        f"{z1:.0f}-{z2:.0f}",
-                        bval[0], bval[1], fault['Aseismic']
-                        ]],
-                        columns=col_labels)
+        rake = fault['Rake'] # For future checks
+        dip = fault['Fault_Geometry']['Dip'] # For future checks
+        slip_rate = fault['Slip']['Value']
+        slip_wt = fault['Slip']['Weight']
+        df0 = DataFrame(
+            [[fault['Fault_Name'], fault['Slip_Type'], 
+            max_mag,
+            "\n".join(f"{s}" for s in slip_rate), 
+            "\n".join(f"{s:.2f}" for s in slip_wt),
+            f"{z1:.0f}-{z2:.0f}",
+            bval[0], bval[1], fault['Aseismic']
+            ]],
+            columns=col_labels)
         df_line_src = concat([df_line_src, df0], ignore_index=True)
 
     if output_filename is not None:
