@@ -1,5 +1,6 @@
 import os, sys
 import toml
+import warnings
 from pandas import DataFrame, concat
 from openquake.hmtk.parsers.faults.fault_yaml_parser import FaultYmltoSource
 
@@ -22,8 +23,8 @@ def toml_to_csv(toml_file, output_filename=None):
         for mfd_model in fault['MFD_Model']:
             max_mags.append(mfd_model['Maximum_Magnitude'])
             bsigvals.append(mfd_model['b_value'])
-        max_mag = _check_list_same_elem(max_mags)
-        bval = _check_list_same_elem(bsigvals)
+        max_mag = _check_list_same_elem(max_mags, raise_warning=True)
+        bval = _check_list_same_elem(bsigvals, raise_warning=True)
         
         z1 = fault['Fault_Geometry']['Upper_Depth']
         z2 = fault['Fault_Geometry']['Lower_Depth']
@@ -46,7 +47,7 @@ def toml_to_csv(toml_file, output_filename=None):
 def _slip_type_from_rake(rake_angle):
     pass
 
-def _check_list_same_elem(lst):
+def _check_list_same_elem(lst, raise_warning=True):
     if len(lst) == 0:
         return None  
     
