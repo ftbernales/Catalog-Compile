@@ -54,10 +54,8 @@ def _check_list_same_elem(lst, raise_warning=True):
     if all(element == lst[0] for element in lst):
         return lst[0]
     else:
+        warnings.warn(f'Elements do not match!')
         return None
-
-# def 
-# raise warning if Maximum Magnitude and b-value/sig_b is not same in MFD_Model
 
 
 if __name__ == '__main__':
