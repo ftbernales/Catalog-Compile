@@ -49,8 +49,38 @@ def toml_to_csv(toml_file, output_filename=None):
     return df_line_src.to_dict()
 
 
-def _slip_type_from_rake(rake_angle):
-    pass
+def _slip_type_from_rake(rake_angle, tec_reg):
+    """
+    [For future implementation]
+
+    Classifies given rake angle and tectonic region to rake classes according to
+    Aki and Richards convention.
+    
+    Returns:
+    `fault_type`
+    """
+    if abs(rake_angle) >= 180:
+        raise ValueError('Invalid rake angle! Absolute value should be < 180.')
+
+    # Fault rake classification according to rake angle (Aki & Richards)
+    rake_classes = {
+        # 'Dextral': (-157.5, 157.5), 'OR' inequality range
+        'Sinistral': (22.5, -22.5),
+        'Reverse': (112.5, 67.5),
+        'Normal': (-67.5, -112.5),
+        'Reverse-Sinistral': (67.5, 22.5),
+        'Normal-Sinistral': (-22.5, -67.5),
+        'Reverse-Dextral': (157.5, 112.5),
+        'Normal-Dextral': (-112.5, -157.5)
+    }
+
+    # Map `fault_type` given in rake classification but due to 'OR' inequality 
+    # in "Dextral", return it when `next()` defaults
+    fault_type = next((cls for cls, (rake1, rake2) in rake_classes.items() 
+                       if rake1 >= rake_angle >= rake2), "Dextral")
+
+    return fault_type
+
 
 def _check_list_same_elem(lst, raise_warning=True):
     if len(lst) == 0:
