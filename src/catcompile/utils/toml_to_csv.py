@@ -1,5 +1,4 @@
-import os, sys
-import toml
+import sys
 import warnings
 from pandas import DataFrame, concat
 from openquake.hmtk.parsers.faults.fault_yaml_parser import FaultYmltoSource
